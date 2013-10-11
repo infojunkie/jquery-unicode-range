@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CSS3 test: unicode-range</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css" id="tests">
+@font-face {
+  font-family: 'SSP';
+  src: url('f/SourceSansPro-Bold.ttf');
+  unicode-range: U+41-4D, U+6E, U+6F, U+7?;
+  }
+.arena p span {font: 2.5em SSP, serif;}
+</style>
+<script src="http://codeorigin.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="../lib/CSSOM.js"></script>
+<script src="../jquery.unicode-range.js"></script>
+<script>
+
+$(document).ready(function(){
+  $('p span').unicodeRange();
+});
+
+</script>
+</head>
+<body>
+<p><a href="http://w3.org/TR/css3-fonts/">http://w3.org/TR/css3-fonts/</a></p>
+<p><a href="http://meyerweb.com/eric/css/tests/css3/unicode-range.html">Original article</a></p>
+
+<div class="arena">
+
+<p id="p01">A paragraph containing a span containing the uppercase alphabet in which A though M should be in SourceSansPro Bold and N through Z should be in a serif font.
+<span>ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>.</p>
+<p id="p02">A paragraph containing a span containing the lowercase alphabet in which A though M should be in a serif font and N through Z should be in SourceSansPro Bold.
+<span>abcdefghijklmnopqrstuvwxyz</span>.</p>
+
+</div>
+
+</body>
+</html>
