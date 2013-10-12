@@ -28,6 +28,10 @@
             var style = css.cssRules[0].style;
             // TODO Load phpjs.trim() on-demand.
             var fontFamily = trim(style['font-family'], '"');
+
+            // Full unicode-range regex is:
+            // u\+[0-9a-fA-F?]{1,6}(-[0-9a-fA-F]{1,6})?
+            // http://www.w3.org/TR/CSS21/syndata.html#tokenization
             var unicodeRangeToRegexp = function(ur) {
               var regex = '';
               $.each(ur.split(','), function() {
@@ -35,12 +39,14 @@
                   replace('U+', '\\u').
                   replace('-', '-\\u');
                 // TODO handle complete spec:
-                // * U+XX less than 4 digits
-                // * U+X?? wildcards
+                // * U+XX with less than 4 digits => pad with zeroes
+                // * U+?? wildcards => replace with range 0-F
+                // * U+XX with 5 or 6 digits => use XRegExp https://gist.github.com/slevithan/2630353
                 regex += range;
               });
               return '([' + regex + ']+)';
             };
+
             $.each(style, function() {
               if (this == 'unicode-range') {
                 unicodeRanges[fontFamily] = {
@@ -81,7 +87,7 @@
           var rule = this;
           var regex = new RegExp(rule.regex, 'mg');
           var spans = $target.html().replace(regex, function(match, text, offset, string) {
-            return '<span style="font-family: '+ rule.fontFamily + ';">' + text + '</span>';
+            return '<span class="unicode-range" style="font-family: '+ rule.fontFamily + ';">' + text + '</span>';
           });
           $target.html(spans);
         });
