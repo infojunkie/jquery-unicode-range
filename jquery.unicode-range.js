@@ -11,7 +11,10 @@
 
       var settings = $.extend({}, this.defaultOptions, options);
 
-      // TODO detect native browser support for unicode-range.
+      // TODO Detect native browser support for unicode-range.
+      // https://github.com/Modernizr/Modernizr/issues/1058
+
+      // TODO Ensure idempotency.
 
       // Loop over style sheets, getting @font-face declarations
       // and checking for unicode-range descriptor.
@@ -20,9 +23,10 @@
         $.each(this.cssRules, function() {
           if (this instanceof CSSFontFaceRule) {
             var rule = this;
-            // TODO Load CSSOM on-demand without relying on client page.
+            // TODO Load CSSOM on-demand.
             var css = CSSOM.parse(rule.cssText);
             var style = css.cssRules[0].style;
+            // TODO Load phpjs.trim() on-demand.
             var fontFamily = trim(style['font-family'], '"');
             var unicodeRangeToRegexp = function(ur) {
               var regex = '';
@@ -55,7 +59,7 @@
 
         // Detect font-family rules that match unicodeRanges above.
         var applicableRules = [];
-        var fontFamilies = $(this).css('font-family').split(',');
+        var fontFamilies = $target.css('font-family').split(',');
         var fontFamiliesUnapplied = [];
         $.each(fontFamilies, function() {
           if (typeof unicodeRanges[this] !== 'undefined') {
@@ -69,7 +73,7 @@
         // Don't handle elements that don't apply.
         if (applicableRules.length == 0) return;
 
-        // Unapply @font-face rules from target
+        // Unapply @font-face rules from target.
         $target.css('font-family', fontFamiliesUnapplied);
 
         // Create spans and apply @font-face to them.
