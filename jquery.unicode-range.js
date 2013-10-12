@@ -35,7 +35,7 @@
                 // * U+X?? wildcards
                 regex += range;
               });
-              return '([' + regex + '])';
+              return '([' + regex + ']+)';
             };
             $.each(style, function() {
               if (this == 'unicode-range') {
@@ -77,7 +77,6 @@
           var rule = this;
           var regex = new RegExp(rule.regex, 'mg');
           var spans = $target.html().replace(regex, function(match, text, offset, string) {
-            // TODO aggregate spans
             return '<span style="font-family: '+ rule.fontFamily + ';">' + text + '</span>';
           });
           $target.html(spans);
