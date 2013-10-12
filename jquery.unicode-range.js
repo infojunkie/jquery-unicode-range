@@ -40,7 +40,6 @@
             $.each(style, function() {
               if (this == 'unicode-range') {
                 unicodeRanges[fontFamily] = {
-                  cssText: rule.style.cssText,
                   regex: unicodeRangeToRegexp(style['unicode-range']),
                   fontFamily: fontFamily
                 };
