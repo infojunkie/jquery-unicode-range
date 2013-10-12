@@ -24,11 +24,24 @@
             var css = CSSOM.parse(rule.cssText);
             var style = css.cssRules[0].style;
             var fontFamily = trim(style['font-family'], '"');
+            var unicodeRangeToRegexp = function(ur) {
+              var regex = '';
+              $.each(ur.split(','), function() {
+                var range = trim(this).
+                  replace('U+', '\\u').
+                  replace('-', '-\\u');
+                // TODO handle complete spec:
+                // * U+XX less than 4 digits
+                // * U+X?? wildcards
+                regex += range;
+              });
+              return '([' + regex + '])';
+            };
             $.each(style, function() {
               if (this == 'unicode-range') {
                 unicodeRanges[fontFamily] = {
                   cssText: rule.style.cssText,
-                  unicodeRange: style['unicode-range'],
+                  regex: unicodeRangeToRegexp(style['unicode-range']),
                   fontFamily: fontFamily
                 };
               }
@@ -54,11 +67,22 @@
           }
         });
 
+        // Don't handle elements that don't apply.
+        if (applicableRules.length == 0) return;
+
         // Unapply @font-face rules from target
         $target.css('font-family', fontFamiliesUnapplied);
 
-        // TODO split text into spans based on given Unicode ranges
-        // TODO apply @font-face rules to new spans
+        // Create spans and apply @font-face to them.
+        $.each(applicableRules, function() {
+          var rule = this;
+          var regex = new RegExp(rule.regex, 'mg');
+          var spans = $target.html().replace(regex, function(match, text, offset, string) {
+            // TODO aggregate spans
+            return '<span style="font-family: '+ rule.fontFamily + ';">' + text + '</span>';
+          });
+          $target.html(spans);
+        });
       });
     }
   });
