@@ -23,29 +23,24 @@
         $.each(this.cssRules, function() {
           if (this instanceof CSSFontFaceRule) {
             var rule = this;
-            // TODO Load CSSOM on-demand.
+            // req CSSOM
             var css = CSSOM.parse(rule.cssText);
             var style = css.cssRules[0].style;
-            // TODO Load phpjs.trim() on-demand.
-            var fontFamily = trim(style['font-family'], '"');
+            var fontFamily = style['font-family'].replace(/"/g, '');
 
             // Full unicode-range regex is:
-            // u\+[0-9a-fA-F?]{1,6}(-[0-9a-fA-F]{1,6})?
+            // u\+[0-9a-f?]{1,6}(-[0-9a-f]{1,6})?
             // http://www.w3.org/TR/CSS21/syndata.html#tokenization
-            var unicodeRangeToRegexp = function(ur) {
+            function unicodeRangeToRegexp(ur) {
               var regex = '';
               $.each(ur.split(','), function() {
-                var range = trim(this).
+                var range = $.trim(this).
                   replace('U+', '\\u').
                   replace('-', '-\\u');
-                // TODO handle complete spec:
-                // * U+XX with less than 4 digits => pad with zeroes
-                // * U+?? wildcards => replace with range 0-F
-                // * U+XX with 5 or 6 digits => use XRegExp https://gist.github.com/slevithan/2630353
                 regex += range;
               });
               return '([' + regex + ']+)';
-            };
+            }
 
             $.each(style, function() {
               if (this == 'unicode-range') {
@@ -95,53 +90,3 @@
     }
   });
 })(jQuery);
-
-// http://phpjs.org/functions/trim/
-function trim (str, charlist) {
-  // http://kevin.vanzonneveld.net
-  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-  // +   improved by: mdsjack (http://www.mdsjack.bo.it)
-  // +   improved by: Alexander Ermolaev (http://snippets.dzone.com/user/AlexanderErmolaev)
-  // +      input by: Erkekjetter
-  // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-  // +      input by: DxGx
-  // +   improved by: Steven Levithan (http://blog.stevenlevithan.com)
-  // +    tweaked by: Jack
-  // +   bugfixed by: Onno Marsman
-  // *     example 1: trim('    Kevin van Zonneveld    ');
-  // *     returns 1: 'Kevin van Zonneveld'
-  // *     example 2: trim('Hello World', 'Hdle');
-  // *     returns 2: 'o Wor'
-  // *     example 3: trim(16, 1);
-  // *     returns 3: 6
-  var whitespace, l = 0,
-    i = 0;
-  str += '';
-
-  if (!charlist) {
-    // default list
-    whitespace = " \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000";
-  } else {
-    // preg_quote custom list
-    charlist += '';
-    whitespace = charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '$1');
-  }
-
-  l = str.length;
-  for (i = 0; i < l; i++) {
-    if (whitespace.indexOf(str.charAt(i)) === -1) {
-      str = str.substring(i);
-      break;
-    }
-  }
-
-  l = str.length;
-  for (i = l - 1; i >= 0; i--) {
-    if (whitespace.indexOf(str.charAt(i)) === -1) {
-      str = str.substring(0, i + 1);
-      break;
-    }
-  }
-
-  return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
-}
