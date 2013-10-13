@@ -18,3 +18,5 @@ To use:
   });
 </script>
 ```
+
+To see it in action: http://jsfiddle.net/qayLF/1/
