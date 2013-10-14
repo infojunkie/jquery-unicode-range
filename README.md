@@ -20,4 +20,4 @@ To use:
 </script>
 ```
 
-To see it in action: http://jsfiddle.net/qayLF/4/
+To see it in action: http://jsfiddle.net/infojunkie/qayLF/6/
