@@ -16,6 +16,8 @@
 
       // TODO Ensure idempotency.
 
+      // TODO Register new tag x-unicode-range.
+
       // Loop over style sheets, getting @font-face declarations
       // and checking for unicode-range descriptor.
       var unicodeRanges = [];
@@ -82,7 +84,7 @@
           var rule = this;
           var regex = new RegExp(rule.regex, 'mg');
           var spans = $target.html().replace(regex, function(match, text, offset, string) {
-            return '<span class="unicode-range" style="font-family: '+ rule.fontFamily + ';">' + text + '</span>';
+            return '<x-unicode-range style="font-family: '+ rule.fontFamily + ';">' + text + '</x-unicode-range>';
           });
           $target.html(spans);
         });
