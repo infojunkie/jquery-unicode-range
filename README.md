@@ -3,6 +3,7 @@ This jQuery plugin emulates the CSS3 descriptor unicode-range http://www.w3.org/
 To use:
 ```html
 <script src="http://codeorigin.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="lib/CSSOM.js"></script>
 <script src="jquery.unicode-range.js"></script>
 <style type="text/css">
   @font-face {
@@ -18,3 +19,5 @@ To use:
   });
 </script>
 ```
+
+To see it in action: http://jsfiddle.net/qayLF/4/
