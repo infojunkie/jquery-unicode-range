@@ -15,9 +15,9 @@ To use:
 </style>
 <script>
   $(document).ready(function(){
-    $('p').unicodeRange();
+    $('p').unicodeRange({debug:true});
   });
 </script>
 ```
 
-To see it in action: http://jsfiddle.net/infojunkie/qayLF/6/
+To see it in action: http://jsfiddle.net/infojunkie/qayLF/7/
