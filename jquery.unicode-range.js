@@ -7,12 +7,26 @@
 ;(function($){
   $.fn.extend({
     unicodeRange: function(options) {
-      this.defaultOptions = {};
+      this.defaultOptions = {
+        userAgent: /firefox/,
+        debug: false
+      };
 
       var settings = $.extend({}, this.defaultOptions, options);
 
       // TODO Detect native browser support for unicode-range.
       // https://github.com/Modernizr/Modernizr/issues/1058
+      // For now, let the caller explicitly set the user agent to check.
+      if (!navigator.userAgent.toLowerCase().match(settings.userAgent)) {
+        debug('unicodeRange: user agent ' + settings.userAgent + ' not detected - aborting.');
+        return;
+      }
+
+      function debug(log) {
+        if (settings.debug) {
+          console.log(log);
+        }
+      }
 
       // TODO Ensure idempotency.
 
