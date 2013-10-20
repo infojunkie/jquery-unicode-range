@@ -14,10 +14,16 @@
 
       var settings = $.extend({}, this.defaultOptions, options);
 
-      // TODO Detect native browser support for unicode-range.
+      // Detect native browser support for unicode-range using Modernizr.
       // https://github.com/Modernizr/Modernizr/issues/1058
-      // For now, let the caller explicitly set the user agent to check.
-      if (!navigator.userAgent.toLowerCase().match(settings.userAgent)) {
+      if (typeof Modernizr != 'undefined' && typeof Modernizr.unicoderange != 'undefined') {
+        if (Modernizr.unicoderange) {
+          debug('unicodeRange: Modernizr reports that user agent supports unicode-range - aborting.');
+          return;
+        }
+      }
+      // Otherwise, let the caller explicitly set the user agent to check.
+      else if (!navigator.userAgent.toLowerCase().match(settings.userAgent)) {
         debug('unicodeRange: user agent ' + settings.userAgent + ' not detected - aborting.');
         return;
       }
